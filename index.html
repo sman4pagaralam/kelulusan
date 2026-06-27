@@ -6,7 +6,7 @@
     <title>SPMB - Cek Kelulusan</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Sama seperti sebelumnya, copy dari kode di atas */
+        /* Semua style sama seperti sebelumnya */
         * {
             margin: 0;
             padding: 0;
@@ -436,6 +436,31 @@
                 font-size: 15px;
             }
         }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 999;
+            animation: slideUp 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .toast-success {
+            border-color: #22c55e;
+        }
+
+        .toast-error {
+            border-color: #ef4444;
+        }
     </style>
 </head>
 <body>
@@ -486,7 +511,23 @@
     </div>
 
     <script>
+        // ⚠️ GANTI URL INI DENGAN URL WEB APP ANDA ⚠️
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyLEPt5tJolqe8eBd01fIOpf9SnufRyWuGnyd3ZA3yygOMgQ3YaMq2gFZmaVxEiexHj/exec";
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
+        }
 
         async function cekKelulusan() {
             const nisn = document.getElementById('nisn').value.trim();
@@ -495,12 +536,12 @@
             const btnCek = document.getElementById('btnCek');
 
             if (!nisn) {
-                alert('❌ Masukkan NISN terlebih dahulu!');
+                showToast('❌ Masukkan NISN terlebih dahulu!', 'error');
                 return;
             }
 
             if (nisn.length < 5) {
-                alert('❌ NISN minimal 5 karakter!');
+                showToast('❌ NISN minimal 5 karakter!', 'error');
                 return;
             }
 
@@ -590,62 +631,43 @@
             }
         }
 
+        // ============ SOLUSI CORS: BUKA DI TAB BARU ============
         async function downloadPDF(nisn) {
             const btn = document.querySelector('.btn-download');
             const originalText = btn?.textContent || '📄 Download Surat Keterangan Lulus';
             
             try {
                 if (btn) {
-                    btn.textContent = '⏳ Mengunduh...';
+                    btn.textContent = '⏳ Menyiapkan...';
                     btn.disabled = true;
                 }
 
+                // Buat URL download
                 const url = `${WEB_APP_URL}?action=download&nisn=${encodeURIComponent(nisn)}`;
-                console.log('Download URL:', url);
-
-                const response = await fetch(url);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                
+                // Buka di tab baru (cara paling aman untuk CORS)
+                const newWindow = window.open(url, '_blank');
+                
+                // Jika popup diblokir, beri tahu user
+                if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                    showToast('⚠️ Popup diblokir. Klik link untuk download manual.', 'error');
+                    // Fallback: buka di tab yang sama
+                    window.location.href = url;
+                    return;
                 }
-
-                const data = await response.json();
-
-                if (!data.success) {
-                    throw new Error(data.error || 'Gagal download PDF');
-                }
-
-                // Decode Base64 ke binary
-                const binaryString = atob(data.fileContent);
-                const bytes = new Uint8Array(binaryString.length);
-                for (let i = 0; i < binaryString.length; i++) {
-                    bytes[i] = binaryString.charCodeAt(i);
-                }
-
-                // Buat Blob dari binary
-                const blob = new Blob([bytes], { type: 'application/pdf' });
-
-                // Buat link download
-                const downloadUrl = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = downloadUrl;
-                a.download = data.fileName || `Surat_Keterangan_Lulus_${nisn}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                window.URL.revokeObjectURL(downloadUrl);
 
                 if (btn) {
-                    btn.textContent = '✅ Berhasil!';
+                    btn.textContent = '✅ Dibuka di tab baru!';
+                    showToast('✅ PDF dibuka di tab baru!', 'success');
                     setTimeout(() => {
                         btn.textContent = originalText;
                         btn.disabled = false;
-                    }, 2000);
+                    }, 3000);
                 }
 
             } catch (error) {
                 console.error('Download error:', error);
-                alert('❌ Gagal download PDF: ' + error.message);
+                showToast('❌ Gagal download: ' + error.message, 'error');
                 
                 if (btn) {
                     btn.textContent = originalText;
@@ -654,6 +676,7 @@
             }
         }
 
+        // Enter key
         document.getElementById('nisn').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') cekKelulusan();
         });
