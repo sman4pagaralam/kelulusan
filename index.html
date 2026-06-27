@@ -1,51 +1,45 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pengumuman Kelulusan Kelas XII</title>
-    <meta http-equiv="refresh" content="0; url=https://script.google.com/macros/s/AKfycbyZfGa9uIv3HkR0L-VNOGttmZX5oObz7hk3f_HdgybQQMFDHofzVyFqo8rRTg_VQgGo/exec">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 100%);
-            margin: 0;
-            color: white;
-        }
-        .redirect-container {
-            text-align: center;
-            padding: 2rem;
-        }
-        .loader {
-            border: 4px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top: 4px solid white;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        a {
-            color: #ffd700;
-        }
-    </style>
-    <script>
-        window.location.href = "https://script.google.com/macros/s/AKfycbyZfGa9uIv3HkR0L-VNOGttmZX5oObz7hk3f_HdgybQQMFDHofzVyFqo8rRTg_VQgGo/exec";
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SPMB</title>
+  <link rel="icon" href="https://drive.google.com/file/d/17spZcW3zd9E64qCtMPs-r2o89MKfAB4B/view?usp=drive_link" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #eee;
+      overflow: hidden; /* Mencegah scroll ganda */
+    }
+
+    .iframe-container {
+      width: 100%;
+      height: 100dvh; /* Menggunakan dvh agar pas di mobile browser */
+      overflow: hidden;
+    }
+
+    iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
 </head>
 <body>
-    <div class="redirect-container">
-        <div class="loader"></div>
-        <p>Mengarahkan Anda ke halaman pengumuman kelulusan...</p>
-        <p>Jika tidak otomatis terarah, <a href="https://script.google.com/macros/s/AKfycbyZfGa9uIv3HkR0L-VNOGttmZX5oObz7hk3f_HdgybQQMFDHofzVyFqo8rRTg_VQgGo/exec">klik di sini</a>.</p>
-    </div>
+  <div class="iframe-container">
+    <iframe
+      id="app"
+      src="https://script.google.com/macros/s/AKfycbyZfGa9uIv3HkR0L-VNOGttmZX5oObz7hk3f_HdgybQQMFDHofzVyFqo8rRTg_VQgGo/exec"
+      scrolling="yes"
+      allowfullscreen="true"
+      webkitallowfullscreen="true"
+      mozallowfullscreen="true"
+      allow="fullscreen; camera; microphone; display-capture; geolocation;">
+    </iframe>
+  </div>
 </body>
 </html>
